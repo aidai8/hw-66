@@ -1,16 +1,24 @@
-import React, {FormEvent, useState} from "react";
+import React, {FormEvent, useEffect, useState} from "react";
 import {IMealMutation} from "../../types";
 
 interface Props {
     onAddNewMeal: (quote: IMealMutation) => void;
+    isEdit?: boolean;
+    initialMeal?: IMealMutation;
 }
 
-const MealForm: React.FC<Props> = ({onAddNewMeal}) => {
+const MealForm: React.FC<Props> = ({onAddNewMeal, isEdit = false, initialMeal}) => {
     const [form, setForm] = useState<IMealMutation>({
         meal_time: '-',
         description: '',
         calories: 0,
     });
+
+    useEffect(() => {
+        if (initialMeal) {
+            setForm(initialMeal);
+        }
+    }, [initialMeal]);
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const {name, value} = e.target;
@@ -30,7 +38,9 @@ const MealForm: React.FC<Props> = ({onAddNewMeal}) => {
         <div>
             <div className='container'>
                 <form onSubmit={onSubmit} className="w-50 mx-auto mt-5">
-                    <div className="mb-3">
+                    <h4>{isEdit ? 'Edit' : 'Add new'} meal</h4>
+                    <hr/>
+                    <div className="mb-3 form-group">
                         <label htmlFor="meal_time">
                             Meal Time
                             <select className="form-select" name="meal_time" value={form.meal_time}
@@ -68,7 +78,7 @@ const MealForm: React.FC<Props> = ({onAddNewMeal}) => {
                         <button
                             className="btn btn-primary"
                             type="submit"
-                        >Save
+                        >{isEdit ? 'Edit' : 'Save'}
                         </button>
                     </div>
                 </form>
